@@ -3,61 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة تحكم الإدمن - موبايل</title>
+  <title>لوحة تحكم الإدمن - Soshial M</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>👑 مدير المنصة</h1>
-  </header>
+  <div class="sidebar">
+    <h2>⚙️ Soshial Admin</h2>
+    <ul>
+      <li onclick="showSection('dashboard')">📊 الإحصائيات</li>
+      <li onclick="showSection('users')">👤 المستخدمين</li>
+      <li onclick="showSection('posts')">🖼️ المنشورات</li>
+      <li onclick="showSection('videos')">🎥 الفيديوهات</li>
+      <li onclick="showSection('live')">📺 البثوث</li>
+      <li onclick="showSection('gifts')">🎁 الهدايا</li>
+      <li onclick="showSection('coins')">💰 الكوينز</li>
+      <li onclick="showSection('settings')">🔧 الإعدادات</li>
+    </ul>
+  </div>
 
-  <main>
-    <section class="card">
-      <h2>📊 الإحصائيات</h2>
-      <p>المستخدمين: <span id="userCount">0</span></p>
-      <p>المنشورات: <span id="postCount">0</span></p>
-      <p>الفيديوهات: <span id="videoCount">0</span></p>
-      <p>البثوث: <span id="liveCount">0</span></p>
-      <p>الهدايا: <span id="giftCount">0</span></p>
+  <div class="main">
+    <header>
+      <h1>مرحباً بك يا مدير المنصة 👑</h1>
+    </header>
+
+    <section id="dashboard" class="panel active">
+      <h2>📊 الإحصائيات العامة</h2>
+      <div class="stats">
+        <p>المستخدمين: <span id="userCount">0</span></p>
+        <p>المنشورات: <span id="postCount">0</span></p>
+        <p>الفيديوهات: <span id="videoCount">0</span></p>
+        <p>البثوث: <span id="liveCount">0</span></p>
+        <p>الهدايا: <span id="giftCount">0</span></p>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>👤 المستخدمين</h2>
-      <ul id="userList"></ul>
-    </section>
+    <section id="users" class="panel"><h2>👤 إدارة المستخدمين</h2><ul id="userList"></ul></section>
+    <section id="posts" class="panel"><h2>🖼️ إدارة المنشورات</h2><ul id="postList"></ul></section>
+    <section id="videos" class="panel"><h2>🎥 إدارة الفيديوهات</h2><ul id="videoList"></ul></section>
+    <section id="live" class="panel"><h2>📺 البثوث المباشرة</h2><ul id="liveList"></ul></section>
+    <section id="gifts" class="panel"><h2>🎁 إدارة الهدايا</h2><ul id="giftList"></ul></section>
 
-    <section class="card">
-      <h2>🖼️ المنشورات</h2>
-      <ul id="postList"></ul>
-    </section>
-
-    <section class="card">
-      <h2>🎥 الفيديوهات</h2>
-      <ul id="videoList"></ul>
-    </section>
-
-    <section class="card">
-      <h2>📺 البثوث المباشرة</h2>
-      <ul id="liveList"></ul>
-    </section>
-
-    <section class="card">
-      <h2>🎁 الهدايا</h2>
-      <ul id="giftList"></ul>
-    </section>
-
-    <section class="card">
-      <h2>💰 شحن كوينز</h2>
+    <section id="coins" class="panel">
+      <h2>💰 شحن الكوينز</h2>
       <input type="text" id="userIdInput" placeholder="ID المستخدم" />
       <input type="number" id="coinAmount" placeholder="عدد الكوينز" />
       <button id="chargeCoinsBtn">شحن</button>
     </section>
-  </main>
 
-  <footer>
-    <p>© Soshial M Admin - نسخة الهاتف</p>
-  </footer>
+    <section id="settings" class="panel">
+      <h2>🔧 إعدادات إضافية</h2>
+      <p>هنا تقدر تضيف ميزات جديدة، صلاحيات، أو تعديلات على النظام.</p>
+    </section>
+  </div>
 
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
