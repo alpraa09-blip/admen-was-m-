@@ -9,31 +9,76 @@
 <body>
   <header>
     <h1>لوحة تحكم الإدمن</h1>
-    <button id="loginBtn">تسجيل دخول الإدمن</button>
+    <p>مرحباً بك يا مدير المنصة 👑</p>
   </header>
 
   <main>
+    <!-- الإحصائيات -->
     <section id="stats">
-      <h2>الإحصائيات</h2>
+      <h2>الإحصائيات العامة</h2>
       <p>عدد المستخدمين: <span id="userCount">0</span></p>
       <p>عدد المنشورات: <span id="postCount">0</span></p>
+      <p>عدد الفيديوهات: <span id="videoCount">0</span></p>
+      <p>عدد البثوث المباشرة: <span id="liveCount">0</span></p>
+      <p>عدد الهدايا المرسلة: <span id="giftCount">0</span></p>
     </section>
 
+    <!-- إدارة المستخدمين -->
     <section id="users">
       <h2>المستخدمين</h2>
-      <ul id="userList"></ul>
+      <ul id="userList">
+        <!-- يتم تعبئته ديناميكياً -->
+      </ul>
     </section>
 
+    <!-- إدارة المنشورات -->
     <section id="posts">
       <h2>المنشورات</h2>
-      <ul id="postList"></ul>
+      <ul id="postList">
+        <!-- يتم تعبئته ديناميكياً -->
+      </ul>
+    </section>
+
+    <!-- إدارة الفيديوهات -->
+    <section id="videos">
+      <h2>الفيديوهات</h2>
+      <ul id="videoList">
+        <!-- يتم تعبئته ديناميكياً -->
+      </ul>
+    </section>
+
+    <!-- إدارة البث المباشر -->
+    <section id="liveControl">
+      <h2>البثوث المباشرة</h2>
+      <ul id="liveList">
+        <!-- يتم تعبئته ديناميكياً -->
+      </ul>
+    </section>
+
+    <!-- إدارة الهدايا -->
+    <section id="giftControl">
+      <h2>الهدايا</h2>
+      <ul id="giftList">
+        <!-- يتم تعبئته ديناميكياً -->
+      </ul>
+    </section>
+
+    <!-- إدارة الكوينز -->
+    <section id="coinControl">
+      <h2>شحن الكوينز</h2>
+      <label for="userIdInput">ID المستخدم:</label>
+      <input type="text" id="userIdInput" placeholder="مثال: u123" />
+      <label for="coinAmount">عدد الكوينز:</label>
+      <input type="number" id="coinAmount" placeholder="مثال: 100" />
+      <button id="chargeCoinsBtn">شحن الكوينز</button>
     </section>
   </main>
 
   <footer>
-    <p>© Soshial M Admin Panel</p>
+    <p>© Soshial M Admin Panel - جميع الحقوق محفوظة</p>
   </footer>
 
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
