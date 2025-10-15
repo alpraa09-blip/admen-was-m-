@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="sidebar">
+  <aside class="sidebar">
     <h2>⚙️ Soshial Admin</h2>
     <ul>
       <li onclick="showSection('dashboard')">📊 الإحصائيات</li>
@@ -19,22 +19,18 @@
       <li onclick="showSection('coins')">💰 الكوينز</li>
       <li onclick="showSection('settings')">🔧 الإعدادات</li>
     </ul>
-  </div>
+  </aside>
 
-  <div class="main">
-    <header>
-      <h1>مرحباً بك يا مدير المنصة 👑</h1>
-    </header>
+  <main class="main">
+    <header><h1>مرحباً بك يا مدير المنصة 👑</h1></header>
 
     <section id="dashboard" class="panel active">
       <h2>📊 الإحصائيات العامة</h2>
-      <div class="stats">
-        <p>المستخدمين: <span id="userCount">0</span></p>
-        <p>المنشورات: <span id="postCount">0</span></p>
-        <p>الفيديوهات: <span id="videoCount">0</span></p>
-        <p>البثوث: <span id="liveCount">0</span></p>
-        <p>الهدايا: <span id="giftCount">0</span></p>
-      </div>
+      <p>المستخدمين: <span id="userCount">0</span></p>
+      <p>المنشورات: <span id="postCount">0</span></p>
+      <p>الفيديوهات: <span id="videoCount">0</span></p>
+      <p>البثوث: <span id="liveCount">0</span></p>
+      <p>الهدايا: <span id="giftCount">0</span></p>
     </section>
 
     <section id="users" class="panel"><h2>👤 إدارة المستخدمين</h2><ul id="userList"></ul></section>
@@ -52,13 +48,11 @@
 
     <section id="settings" class="panel">
       <h2>🔧 إعدادات إضافية</h2>
-      <p>هنا تقدر تضيف ميزات جديدة، صلاحيات، أو تعديلات على النظام.</p>
+      <p>هنا تقدر تضيف صلاحيات، ميزات جديدة، أو تعديلات على النظام.</p>
     </section>
-  </div>
+  </main>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
   <script src="script.js"></script>
 </body>
