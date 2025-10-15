@@ -37,116 +37,149 @@ onAuthStateChanged(auth, (user) => {
 
 // ✅ تحميل البيانات
 async function loadDashboard() {
-  const usersSnap = await getDocs(collection(db, "users"));
-  const postsSnap = await getDocs(collection(db, "posts"));
-  const videosSnap = await getDocs(collection(db, "videos"));
-  const livesSnap = await getDocs(collection(db, "live_streams"));
-  const giftsSnap = await getDocs(collection(db, "gifts"));
+  try {
+    const usersSnap = await getDocs(collection(db, "users"));
+    const postsSnap = await getDocs(collection(db, "posts"));
+    const videosSnap = await getDocs(collection(db, "videos"));
+    const livesSnap = await getDocs(collection(db, "live_streams"));
+    const giftsSnap = await getDocs(collection(db, "gifts"));
 
-  // الإحصائيات
-  document.getElementById("userCount").textContent = usersSnap.size;
-  document.getElementById("postCount").textContent = postsSnap.size;
-  document.getElementById("videoCount").textContent = videosSnap.size;
-  document.getElementById("liveCount").textContent = livesSnap.size;
-  document.getElementById("giftCount").textContent = giftsSnap.size;
+    // الإحصائيات
+    document.getElementById("userCount").textContent = usersSnap.size;
+    document.getElementById("postCount").textContent = postsSnap.size;
+    document.getElementById("videoCount").textContent = videosSnap.size;
+    document.getElementById("liveCount").textContent = livesSnap.size;
+    document.getElementById("giftCount").textContent = giftsSnap.size;
 
-  // المستخدمين
-  const userList = document.getElementById("userList");
-  usersSnap.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.innerHTML = `
-      ${data.name || doc.id} - ${data.coins || 0} كوينز
-      <button onclick="banUser('${doc.id}')">حظر</button>
-      <button onclick="addCoins('${doc.id}', 100)">+100 كوينز</button>
-    `;
-    userList.appendChild(li);
-  });
+    // المستخدمين
+    const userList = document.getElementById("userList");
+    usersSnap.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${data.name || doc.id} - ${data.coins || 0} كوينز
+        <button onclick="banUser('${doc.id}')">حظر</button>
+        <button onclick="addCoins('${doc.id}', 100)">+100 كوينز</button>
+      `;
+      userList.appendChild(li);
+    });
 
-  // المنشورات
-  const postList = document.getElementById("postList");
-  postsSnap.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.innerHTML = `
-      ${data.caption || "منشور بدون وصف"}
-      <button onclick="deletePost('${doc.id}')">حذف</button>
-    `;
-    postList.appendChild(li);
-  });
+    // المنشورات
+    const postList = document.getElementById("postList");
+    postsSnap.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${data.caption || "منشور بدون وصف"}
+        <button onclick="deletePost('${doc.id}')">حذف</button>
+      `;
+      postList.appendChild(li);
+    });
 
-  // الفيديوهات
-  const videoList = document.getElementById("videoList");
-  videosSnap.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.innerHTML = `
-      فيديو: ${data.title || "بدون عنوان"}
-      <button onclick="deleteVideo('${doc.id}')">حذف</button>
-    `;
-    videoList.appendChild(li);
-  });
+    // الفيديوهات
+    const videoList = document.getElementById("videoList");
+    videosSnap.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        فيديو: ${data.title || "بدون عنوان"}
+        <button onclick="deleteVideo('${doc.id}')">حذف</button>
+      `;
+      videoList.appendChild(li);
+    });
 
-  // البثوث المباشرة
-  const liveList = document.getElementById("liveList");
-  livesSnap.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.innerHTML = `
-      بث: ${data.streamer || doc.id} - مشاهدين: ${data.viewers || 0}
-      <button onclick="endLive('${doc.id}')">إنهاء البث</button>
-    `;
-    liveList.appendChild(li);
-  });
+    // البثوث المباشرة
+    const liveList = document.getElementById("liveList");
+    livesSnap.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        بث: ${data.streamer || doc.id} - مشاهدين: ${data.viewers || 0}
+        <button onclick="endLive('${doc.id}')">إنهاء البث</button>
+      `;
+      liveList.appendChild(li);
+    });
 
-  // الهدايا
-  const giftList = document.getElementById("giftList");
-  giftsSnap.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.textContent = `${data.name || "هدية"} - ${data.price || 0} كوينز`;
-    giftList.appendChild(li);
-  });
+    // الهدايا
+    const giftList = document.getElementById("giftList");
+    giftsSnap.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.textContent = `${data.name || "هدية"} - ${data.price || 0} كوينز`;
+      giftList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("خطأ في تحميل البيانات:", error);
+    alert("فشل في تحميل لوحة التحكم");
+  }
 }
 
 // ✅ وظائف التحكم
 
 // حظر مستخدم
 async function banUser(userId) {
-  await updateDoc(doc(db, "users", userId), {
-    banned: true
-  });
-  alert("تم حظر المستخدم");
+  try {
+    await updateDoc(doc(db, "users", userId), {
+      banned: true
+    });
+    alert("تم حظر المستخدم");
+  } catch (error) {
+    console.error("خطأ في الحظر:", error);
+    alert("فشل في حظر المستخدم");
+  }
 }
 
 // شحن كوينز
 document.getElementById("chargeCoinsBtn").addEventListener("click", async () => {
-  const userId = document.getElementById("userIdInput").value;
+  const userId = document.getElementById("userIdInput").value.trim();
   const amount = parseInt(document.getElementById("coinAmount").value);
-  if (userId && amount > 0) {
-    await updateDoc(doc(db, "users", userId), {
+
+  if (!userId || isNaN(amount) || amount <= 0) {
+    alert("يرجى إدخال ID صحيح وعدد كوينز أكبر من 0");
+    return;
+  }
+
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
       coins: increment(amount)
     });
     alert(`تم شحن ${amount} كوينز للمستخدم ${userId}`);
-  } else {
-    alert("يرجى إدخال بيانات صحيحة");
+  } catch (error) {
+    console.error("خطأ في الشحن:", error);
+    alert("فشل في الشحن. تأكد من ID المستخدم أو الاتصال بـ Firebase");
   }
 });
 
 // حذف منشور
 async function deletePost(postId) {
-  await deleteDoc(doc(db, "posts", postId));
-  alert("تم حذف المنشور");
+  try {
+    await deleteDoc(doc(db, "posts", postId));
+    alert("تم حذف المنشور");
+  } catch (error) {
+    console.error("خطأ في حذف المنشور:", error);
+    alert("فشل في حذف المنشور");
+  }
 }
 
 // حذف فيديو
 async function deleteVideo(videoId) {
-  await deleteDoc(doc(db, "videos", videoId));
-  alert("تم حذف الفيديو");
+  try {
+    await deleteDoc(doc(db, "videos", videoId));
+    alert("تم حذف الفيديو");
+  } catch (error) {
+    console.error("خطأ في حذف الفيديو:", error);
+    alert("فشل في حذف الفيديو");
+  }
 }
 
 // إنهاء بث مباشر
 async function endLive(liveId) {
-  await deleteDoc(doc(db, "live_streams", liveId));
-  alert("تم إنهاء البث");
+  try {
+    await deleteDoc(doc(db, "live_streams", liveId));
+    alert("تم إنهاء البث");
+  } catch (error) {
+    console.error("خطأ في إنهاء البث:", error);
+    alert("فشل في إنهاء البث");
+  }
 }
