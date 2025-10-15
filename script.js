@@ -1,4 +1,4 @@
-// ✅ استيراد Firebase
+// ✅ Firebase Setup
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -11,7 +11,6 @@ import {
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-// ✅ إعداد Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAtJKG2p4mfbxYLqVZHcu7t_YOSx15ts14",
   authDomain: "soshial-9932a.firebaseapp.com",
@@ -26,7 +25,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ✅ تحقق من الإدمن
+// ✅ التنقل بين الأقسام
+function showSection(id) {
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+
+// ✅ التحقق من الإدمن
 onAuthStateChanged(auth, (user) => {
   if (user && user.email === "admin@soshial.com") {
     loadDashboard();
@@ -130,24 +137,29 @@ async function banUser(userId) {
 }
 
 // شحن كوينز
-document.getElementById("chargeCoinsBtn").addEventListener("click", async () => {
-  const userId = document.getElementById("userIdInput").value.trim();
-  const amount = parseInt(document.getElementById("coinAmount").value);
+document.addEventListener("DOMContentLoaded", () => {
+  const chargeBtn = document.getElementById("chargeCoinsBtn");
+  if (chargeBtn) {
+    chargeBtn.addEventListener("click", async () => {
+      const userId = document.getElementById("userIdInput").value.trim();
+      const amount = parseInt(document.getElementById("coinAmount").value);
 
-  if (!userId || isNaN(amount) || amount <= 0) {
-    alert("يرجى إدخال ID صحيح وعدد كوينز أكبر من 0");
-    return;
-  }
+      if (!userId || isNaN(amount) || amount <= 0) {
+        alert("يرجى إدخال ID صحيح وعدد كوينز أكبر من 0");
+        return;
+      }
 
-  try {
-    const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
-      coins: increment(amount)
+      try {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, {
+          coins: increment(amount)
+        });
+        alert(`تم شحن ${amount} كوينز للمستخدم ${userId}`);
+      } catch (error) {
+        console.error("خطأ في الشحن:", error);
+        alert("فشل في الشحن. تأكد من ID المستخدم أو الاتصال بـ Firebase");
+      }
     });
-    alert(`تم شحن ${amount} كوينز للمستخدم ${userId}`);
-  } catch (error) {
-    console.error("خطأ في الشحن:", error);
-    alert("فشل في الشحن. تأكد من ID المستخدم أو الاتصال بـ Firebase");
   }
 });
 
