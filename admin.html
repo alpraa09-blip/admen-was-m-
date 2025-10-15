@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soshial M - لوحة التحكم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #d97706;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --sidebar: #0f172a;
+            --header: #1e293b;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #334155;
+            direction: rtl;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* الشريط الجانبي */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-right: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #1e293b;
+            color: white;
+            border-right-color: var(--primary);
+        }
+
+        .nav-item i {
+            margin-left: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            background: #f8fafc;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header h2 {
+            color: var(--dark);
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card.users {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.videos {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.coins {
+            border-left-color: var(--primary);
+        }
+
+        .stat-card.income {
+            border-left-color: var(--danger);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* الجداول */
+        .content-section {
+            background: white;
+            margin: 0 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h3 {
+            color: var(--dark);
+            font-size: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* النماذج */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* التحكم في العملات */
+        .coins-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .coins-form {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* نظام الهجمات */
+        .attack-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .attack-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .attack-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* الحظر */
+        .ban-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-banned {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* البحث */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        /* التبويبات */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- الشريط الجانبي -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Soshial <span>Admin</span></h1>
+            </div>
+            
+            <div class="nav-item active" data-tab="dashboard">
+                <i class="fas fa-chart-bar"></i>
+                <span>لوحة التحكم</span>
+            </div>
+            
+            <div class="nav-item" data-tab="users">
+                <i class="fas fa-users"></i>
+                <span>إدارة المستخدمين</span>
+            </div>
+            
+            <div class="nav-item" data-tab="videos">
+                <i class="fas fa-video"></i>
+                <span>إدارة الفيديوهات</span>
+            </div>
+            
+            <div class="nav-item" data-tab="coins">
+                <i class="fas fa-coins"></i>
+                <span>إدارة العملات</span>
+            </div>
+            
+            <div class="nav-item" data-tab="payments">
+                <i class="fas fa-credit-card"></i>
+                <span>المدفوعات</span>
+            </div>
+            
+            <div class="nav-item" data-tab="live">
+                <i class="fas fa-broadcast-tower"></i>
+                <span>البث المباشر</span>
+            </div>
+            
+            <div class="nav-item" data-tab="security">
+                <i class="fas fa-shield-alt"></i>
+                <span>الأمان والهجمات</span>
+            </div>
+            
+            <div class="nav-item" data-tab="reports">
+                <i class="fas fa-flag"></i>
+                <span>التقارير</span>
+            </div>
+            
+            <div class="nav-item" style="margin-top: 50px;">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </div>
+            
+            <div class="nav-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
+            </div>
+        </div>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content">
+            <!-- الهيدر -->
+            <div class="header">
+                <h2 id="pageTitle">لوحة التحكم</h2>
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <span>مدير النظام</span>
+                </div>
+            </div>
+
+            <!-- لوحة التحكم -->
+            <div class="tab-content active" id="dashboard">
+                <!-- الإحصائيات -->
+                <div class="stats-grid">
+                    <div class="stat-card users">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number">12,458</div>
+                        <div class="stat-label">إجمالي المستخدمين</div>
+                    </div>
+                    
+                    <div class="stat-card videos">
+                        <div class="stat-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-number">8,742</div>
+                        <div class="stat-label">الفيديوهات المنشورة</div>
+                    </div>
+                    
+                    <div class="stat-card coins">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-number">5.2M</div>
+                        <div class="stat-label">إجمالي العملات</div>
+                    </div>
+                    
+                    <div class="stat-card income">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-number">$12,850</div>
+                        <div class="stat-label">إجمالي الإيرادات</div>
+                    </div>
+                </div>
+
+                <!-- آخر المستخدمين -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>آخر المستخدمين المسجلين</h3>
+                        <button class="btn btn-primary">عرض الكل</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اسم المستخدم</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ahmed2024</td>
+                                    <td>ahmed@example.com</td>
+                                    <td>2024-01-15</td>
+                                    <td><span class="status-badge status-active">نشط</span></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm">حظر</button>
+                                        <button class="btn btn-primary btn-sm">تعديل</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>sara_pro</td>
+                                    <td>sara@example.com</td>
+                                    <td>2024-01-14</td>
+                                    <td><span class="status-badge status-active">نشط</span></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm">حظر</button>
+                                        <button class="btn btn-primary btn-sm">تعديل</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة المستخدمين -->
+            <div class="tab-content" id="users">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>إدارة المستخدمين</h3>
+                        <div class="search-box">
+                            <input type="text" class="search-input" placeholder="بحث عن مستخدم...">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>اسم المستخدم</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>العملات</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- سيتم ملؤه بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة الفيديوهات -->
+            <div class="tab-content" id="videos">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>إدارة الفيديوهات</h3>
+                        <button class="btn btn-primary" onclick="showModal('videoModal')">إضافة فيديو</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>عنوان الفيديو</th>
+                                    <th>المستخدم</th>
+                                    <th>المشاهدات</th>
+                                    <th>التعليقات</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="videosTable">
+                                <!-- سيتم ملؤه بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة العملات -->
+            <div class="tab-content" id="coins">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>إدارة العملات الرقمية</h3>
+                        <button class="btn btn-primary" onclick="showModal('coinsModal')">إضافة عملات</button>
+                    </div>
+                    
+                    <div class="coins-control">
+                        <div class="coins-form">
+                            <h4>إضافة عملات لمستخدم</h4>
+                            <div class="form-group">
+                                <label class="form-label">اسم المستخدم</label>
+                                <input type="text" class="form-input" id="usernameInput" placeholder="أدخل اسم المستخدم">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">عدد العملات</label>
+                                <input type="number" class="form-input" id="coinsAmount" placeholder="أدخل عدد العملات">
+                            </div>
+                            <button class="btn btn-success" onclick="addCoinsToUser()">إضافة العملات</button>
+                        </div>
+
+                        <div class="coins-form">
+                            <h4>خصم عملات من مستخدم</h4>
+                            <div class="form-group">
+                                <label class="form-label">اسم المستخدم</label>
+                                <input type="text" class="form-input" id="usernameInputRemove" placeholder="أدخل اسم المستخدم">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">عدد العملات</label>
+                                <input type="number" class="form-input" id="coinsAmountRemove" placeholder="أدخل عدد العملات">
+                            </div>
+                            <button class="btn btn-danger" onclick="removeCoinsFromUser()">خصم العملات</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <h4>سجل معاملات العملات</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>التاريخ</th>
+                                        <th>المستخدم</th>
+                                        <th>نوع العملية</th>
+                                        <th>المبلغ</th>
+                                        <th>الرصيد الجديد</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coinsHistory">
+                                    <!-- سيتم ملؤه بالبيانات -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- المدفوعات -->
+            <div class="tab-content" id="payments">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>إدارة المدفوعات</h3>
+                        <button class="btn btn-primary">تصدير التقارير</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>رقم العملية</th>
+                                    <th>المستخدم</th>
+                                    <th>المبلغ</th>
+                                    <th>العملات</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentsTable">
+                                <!-- سيتم ملؤه بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الأمان والهجمات -->
+            <div class="tab-content" id="security">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>نظام الأمان والهجمات</h3>
+                        <button class="btn btn-warning" onclick="runSecurityScan()">فحص الأمان</button>
+                    </div>
+
+                    <div class="attack-controls">
+                        <button class="attack-btn" onclick="startDDoSAttack()">
+                            <i class="fas fa-bolt"></i>
+                            هجوم DDoS
+                        </button>
+                        <button class="attack-btn" onclick="startBruteForce()">
+                            <i class="fas fa-key"></i>
+                            هجوم Brute Force
+                        </button>
+                        <button class="attack-btn" onclick="startSQLInjection()">
+                            <i class="fas fa-database"></i>
+                            هجوم SQL Injection
+                        </button>
+                        <button class="attack-btn" onclick="startXSSAttack()">
+                            <i class="fas fa-code"></i>
+                            هجوم XSS
+                        </button>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <h4>سجل الهجمات</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>التاريخ</th>
+                                        <th>نوع الهجوم</th>
+                                        <th>الحالة</th>
+                                        <th>التفاصيل</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attacksLog">
+                                    <!-- سيتم ملؤه بالبيانات -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة فيديو -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة فيديو جديد</h3>
+                <button class="close-modal" onclick="closeModal('videoModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">عنوان الفيديو</label>
+                <input type="text" class="form-input" id="videoTitle" placeholder="أدخل عنوان الفيديو">
+            </div>
+            <div class="form-group">
+                <label class="form-label">رابط الفيديو</label>
+                <input type="url" class="form-input" id="videoUrl" placeholder="أدخل رابط الفيديو">
+            </div>
+            <div class="form-group">
+                <label class="form-label">المستخدم</label>
+                <input type="text" class="form-input" id="videoUser" placeholder="أدخل اسم المستخدم">
+            </div>
+            <div class="form-group">
+                <label class="form-label">الوصف</label>
+                <textarea class="form-input" id="videoDescription" placeholder="أدخل وصف الفيديو" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="addVideo()">إضافة الفيديو</button>
+        </div>
+    </div>
+
+    <script>
+        // بيانات الموقع
+        let users = [
+            { id: 1, username: 'ahmed2024', email: 'ahmed@example.com', coins: 1500, status: 'active' },
+            { id: 2, username: 'sara_pro', email: 'sara@example.com', coins: 3200, status: 'active' },
+            { id: 3, username: 'mohamed_tech', email: 'mohamed@example.com', coins: 800, status: 'banned' },
+            { id: 4, username: 'fatima_design', email: 'fatima@example.com', coins: 2100, status: 'active' }
+        ];
+
+        let videos = [
+            { id: 1, title: 'فيديو رحلة سياحية', user: 'ahmed2024', views: 12500, comments: 234, status: 'active' },
+            { id: 2, title: 'طبخ عشاء سريع', user: 'sara_pro', views: 8900, comments: 156, status: 'active' },
+            { id: 3, title: 'مراجعة هاتف جديد', user: 'mohamed_tech', views: 15200, comments: 289, status: 'hidden' }
+        ];
+
+        let payments = [
+            { id: 1, user: 'ahmed2024', amount: 50, coins: 5000, status: 'completed', date: '2024-01-15' },
+            { id: 2, user: 'sara_pro', amount: 10, coins: 1000, status: 'completed', date: '2024-01-14' },
+            { id: 3, user: 'fatima_design', amount: 5, coins: 500, status: 'pending', date: '2024-01-13' }
+        ];
+
+        let coinsHistory = [];
+        let attacksLog = [];
+
+        // تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsersTable();
+            loadVideosTable();
+            loadPaymentsTable();
+            loadCoinsHistory();
+            loadAttacksLog();
+            
+            // إعداد التنقل
+            setupNavigation();
+        });
+
+        // إعداد التنقل
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    if (tab) {
+                        showTab(tab);
+                    }
+                });
+            });
+        }
+
+        // عرض التبويب
+        function showTab(tabName) {
+            // إخفاء جميع المحتويات
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إزالة النشط من القائمة
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // عرض المحتوى المطلوب
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // تحديث عنوان الصفحة
+            updatePageTitle(tabName);
+        }
+
+        // تحديث عنوان الصفحة
+        function updatePageTitle(tabName) {
+            const titles = {
+                'dashboard': 'لوحة التحكم',
+                'users': 'إدارة المستخدمين',
+                'videos': 'إدارة الفيديوهات',
+                'coins': 'إدارة العملات',
+                'payments': 'المدفوعات',
+                'security': 'الأمان والهجمات',
+                'reports': 'التقارير'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[tabName] || 'لوحة التحكم';
+        }
+
+        // تحميل جدول المستخدمين
+        function loadUsersTable() {
+            const tbody = document.getElementById('usersTable');
+            tbody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.coins.toLocaleString()}</td>
+                    <td>
+                        <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-banned'}">
+                            ${user.status === 'active' ? 'نشط' : 'محظور'}
+                        </span>
+                    </td>
+                    <td class="ban-controls">
+                        <button class="btn btn-${user.status === 'active' ? 'danger' : 'success'} btn-sm" 
+                                onclick="toggleBan(${user.id})">
+                            ${user.status === 'active' ? 'حظر' : 'فك الحظر'}
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="editUser(${user.id})">
+                            تعديل
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="resetPassword(${user.id})">
+                            إعادة تعيين
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحميل جدول الفيديوهات
+        function loadVideosTable() {
+            const tbody = document.getElementById('videosTable');
+            tbody.innerHTML = '';
+            
+            videos.forEach(video => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${video.id}</td>
+                    <td>${video.title}</td>
+                    <td>${video.user}</td>
+                    <td>${video.views.toLocaleString()}</td>
+                    <td>${video.comments}</td>
+                    <td>
+                        <span class="status-badge ${video.status === 'active' ? 'status-active' : 'status-banned'}">
+                            ${video.status === 'active' ? 'نشط' : 'مخفي'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-${video.status === 'active' ? 'danger' : 'success'} btn-sm" 
+                                onclick="toggleVideoStatus(${video.id})">
+                            ${video.status === 'active' ? 'إخفاء' : 'إظهار'}
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteVideo(${video.id})">
+                            حذف
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحميل جدول المدفوعات
+        function loadPaymentsTable() {
+            const tbody = document.getElementById('paymentsTable');
+            tbody.innerHTML = '';
+            
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${payment.id}</td>
+                    <td>${payment.user}</td>
+                    <td>$${payment.amount}</td>
+                    <td>${payment.coins.toLocaleString()}</td>
+                    <td>
+                        <span class="status-badge ${payment.status === 'completed' ? 'status-active' : 'status-banned'}">
+                            ${payment.status === 'completed' ? 'مكتمل' : 'قيد الانتظار'}
+                        </span>
+                    </td>
+                    <td>${payment.date}</td>
+                    <td>
+                        ${payment.status === 'pending' ? 
+                            `<button class="btn btn-success btn-sm" onclick="approvePayment(${payment.id})">موافقة</button>` : 
+                            ''
+                        }
+                        <button class="btn btn-primary btn-sm" onclick="viewPayment(${payment.id})">عرض</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحميل سجل العملات
+        function loadCoinsHistory() {
+            const tbody = document.getElementById('coinsHistory');
+            tbody.innerHTML = '';
+            
+            coinsHistory.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td>${transaction.user}</td>
+                    <td>${transaction.type}</td>
+                    <td>${transaction.amount > 0 ? '+' : ''}${transaction.amount}</td>
+                    <td>${transaction.newBalance.toLocaleString()}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحميل سجل الهجمات
+        function loadAttacksLog() {
+            const tbody = document.getElementById('attacksLog');
+            tbody.innerHTML = '';
+            
+            attacksLog.forEach(attack => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${attack.date}</td>
+                    <td>${attack.type}</td>
+                    <td>
+                        <span class="status-badge ${attack.status === 'success' ? 'status-active' : 'status-banned'}">
+                            ${attack.status === 'success' ? 'ناجح' : 'فاشل'}
+                        </span>
+                    </td>
+                    <td>${attack.details}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // إدارة العملات
+        function addCoinsToUser() {
+            const username = document.getElementById('usernameInput').value;
+            const amount = parseInt(document.getElementById('coinsAmount').value);
+            
+            if (!username || !amount) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+            
+            const user = users.find(u => u.username === username);
+            if (user) {
+                user.coins += amount;
+                
+                // إضافة إلى السجل
+                coinsHistory.unshift({
+                    date: new Date().toLocaleDateString(),
+                    user: username,
+                    type: 'إضافة عملات',
+                    amount: amount,
+                    newBalance: user.coins
+                });
+                
+                loadUsersTable();
+                loadCoinsHistory();
+                alert(`تم إضافة ${amount} عملة إلى ${username}`);
+                
+                // تفريغ الحقول
+                document.getElementById('usernameInput').value = '';
+                document.getElementById('coinsAmount').value = '';
+            } else {
+                alert('المستخدم غير موجود');
+            }
+        }
+
+        function removeCoinsFromUser() {
+            const username = document.getElementById('usernameInputRemove').value;
+            const amount = parseInt(document.getElementById('coinsAmountRemove').value);
+            
+            if (!username || !amount) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+            
+            const user = users.find(u => u.username === username);
+            if (user) {
+                if (user.coins >= amount) {
+                    user.coins -= amount;
+                    
+                    // إضافة إلى السجل
+                    coinsHistory.unshift({
+                        date: new Date().toLocaleDateString(),
+                        user: username,
+                        type: 'خصم عملات',
+                        amount: -amount,
+                        newBalance: user.coins
+                    });
+                    
+                    loadUsersTable();
+                    loadCoinsHistory();
+                    alert(`تم خصم ${amount} عملة من ${username}`);
+                    
+                    // تفريغ الحقول
+                    document.getElementById('usernameInputRemove').value = '';
+                    document.getElementById('coinsAmountRemove').value = '';
+                } else {
+                    alert('رصيد المستخدم غير كافي');
+                }
+            } else {
+                alert('المستخدم غير موجود');
+            }
+        }
+
+        // نظام الهجمات
+        function startDDoSAttack() {
+            const attack = {
+                date: new Date().toLocaleString(),
+                type: 'هجوم DDoS',
+                status: Math.random() > 0.3 ? 'success' : 'failed',
+                details: 'هجوم توزيع الخدمة على الخوادم المستهدفة'
+            };
+            
+            attacksLog.unshift(attack);
+            loadAttacksLog();
+            alert(`بدأ هجوم DDoS - الحالة: ${attack.status === 'success' ? 'ناجح' : 'فاشل'}`);
+        }
+
+        function startBruteForce() {
+            const attack = {
+                date: new Date().toLocaleString(),
+                type: 'هجوم Brute Force',
+                status: Math.random() > 0.5 ? 'success' : 'failed',
+                details: 'هجوم تجربة كلمات المرور على الحسابات'
+            };
+            
+            attacksLog.unshift(attack);
+            loadAttacksLog();
+            alert(`بدأ هجوم Brute Force - الحالة: ${attack.status === 'success' ? 'ناجح' : 'فاشل'}`);
+        }
+
+        function startSQLInjection() {
+            const attack = {
+                date: new Date().toLocaleString(),
+                type: 'هجوم SQL Injection',
+                status: Math.random() > 0.4 ? 'success' : 'failed',
+                details: 'هجوم حقن SQL على قواعد البيانات'
+            };
+            
+            attacksLog.unshift(attack);
+            loadAttacksLog();
+            alert(`بدأ هجوم SQL Injection - الحالة: ${attack.status === 'success' ? 'ناجح' : 'فاشل'}`);
+        }
+
+        function startXSSAttack() {
+            const attack = {
+                date: new Date().toLocaleString(),
+                type: 'هجوم XSS',
+                status: Math.random() > 0.6 ? 'success' : 'failed',
+                details: 'هجوم Cross-Site Scripting على الموقع'
+            };
+            
+            attacksLog.unshift(attack);
+            loadAttacksLog();
+            alert(`بدأ هجوم XSS - الحالة: ${attack.status === 'success' ? 'ناجح' : 'فاشل'}`);
+        }
+
+        function runSecurityScan() {
+            alert('بدأ فحص الأمان... يتم فحص جميع الثغرات الأمنية');
+            
+            const scan = {
+                date: new Date().toLocaleString(),
+                type: 'فحص أمني',
+                status: 'success',
+                details: 'تم اكتشاف 3 ثغرات أمنية وإصلاحها'
+            };
+            
+            attacksLog.unshift(scan);
+            loadAttacksLog();
+        }
+
+        // إدارة المستخدمين
+        function toggleBan(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.status = user.status === 'active' ? 'banned' : 'active';
+                loadUsersTable();
+                alert(`تم ${user.status === 'active' ? 'فك حظر' : 'حظر'} المستخدم ${user.username}`);
+            }
+        }
+
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                alert(`تعديل بيانات المستخدم: ${user.username}`);
+            }
+        }
+
+        function resetPassword(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                alert(`تم إعادة تعيين كلمة المرور للمستخدم ${user.username}\nكلمة المرور الجديدة: 123456`);
+            }
+        }
+
+        // إدارة الفيديوهات
+        function toggleVideoStatus(videoId) {
+            const video = videos.find(v => v.id === videoId);
+            if (video) {
+                video.status = video.status === 'active' ? 'hidden' : 'active';
+                loadVideosTable();
+                alert(`تم ${video.status === 'active' ? 'إظهار' : 'إخفاء'} الفيديو`);
+            }
+        }
+
+        function deleteVideo(videoId) {
+            if (confirm('هل أنت متأكد من حذف هذا الفيديو؟')) {
+                videos = videos.filter(v => v.id !== videoId);
+                loadVideosTable();
+                alert('تم حذف الفيديو بنجاح');
+            }
+        }
+
+        function addVideo() {
+            const title = document.getElementById('videoTitle').value;
+            const url = document.getElementById('videoUrl').value;
+            const user = document.getElementById('videoUser').value;
+            const description = document.getElementById('videoDescription').value;
+            
+            if (!title || !url || !user) {
+                alert('يرجى ملء الحقول المطلوبة');
+                return;
+            }
+            
+            const newVideo = {
+                id: videos.length + 1,
+                title: title,
+                user: user,
+                views: 0,
+                comments: 0,
+                status: 'active'
+            };
+            
+            videos.unshift(newVideo);
+            loadVideosTable();
+            closeModal('videoModal');
+            alert('تم إضافة الفيديو بنجاح');
+        }
+
+        // المدفوعات
+        function approvePayment(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            if (payment) {
+                payment.status = 'completed';
+                loadPaymentsTable();
+                alert('تمت الموافقة على الدفع');
+            }
+        }
+
+        function viewPayment(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            if (payment) {
+                alert(`تفاصيل الدفع:\nالمستخدم: ${payment.user}\nالمبلغ: $${payment.amount}\nالعملات: ${payment.coins}\nالحالة: ${payment.status}`);
+            }
+        }
+
+        // النماذج المنبثقة
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // إغلاق النماذج بالضغط خارجها
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
