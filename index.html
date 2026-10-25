@@ -1,59 +1,1420 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة تحكم الإدمن - Soshial M</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ALIEN APOCALYPSE: LAST FLIGHT</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color: black;
+            color: white;
+            touch-action: none;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 10;
+            font-size: 14px;
+            border: 1px solid #ff5555;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 20px;
+            pointer-events: none;
+            z-index: 20;
+        }
+        #joystick-area {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 60px;
+            border: 2px solid rgba(255,255,255,0.5);
+            position: relative;
+            pointer-events: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #joystick {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 25px;
+            position: absolute;
+            pointer-events: none;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        #action-buttons {
+            display: flex;
+            gap: 15px;
+            pointer-events: auto;
+        }
+        .btn {
+            width: 65px;
+            height: 65px;
+            background: rgba(30,30,30,0.8);
+            border: 2px solid #ffaa00;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            user-select: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,170,0,0.5);
+            touch-action: manipulation;
+            transition: all 0.1s;
+        }
+        .btn:active {
+            background: #ffaa00;
+            color: black;
+            transform: scale(0.9);
+        }
+        #stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 10;
+            border: 1px solid #00aaff;
+            font-size: 14px;
+            text-align: right;
+            line-height: 1.5;
+        }
+        #mission {
+            position: absolute;
+            top: 100px;
+            left: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 8px 15px;
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 10;
+            border-left: 4px solid #ffaa00;
+            font-size: 13px;
+            max-width: 200px;
+        }
+        #inventory-panel {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            border: 1px solid #ffaa00;
+            border-radius: 15px;
+            padding: 15px;
+            width: 280px;
+            display: none;
+            z-index: 30;
+            pointer-events: auto;
+            color: #fff;
+        }
+        #inventory-panel h3 {
+            margin: 0 0 10px;
+            color: #ffaa00;
+            text-align: center;
+        }
+        .inv-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+        .inv-item button {
+            background: #ffaa00;
+            border: none;
+            border-radius: 5px;
+            padding: 2px 8px;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        #crafting-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #00aaff;
+            border-radius: 20px;
+            padding: 20px;
+            width: 300px;
+            display: none;
+            z-index: 40;
+            pointer-events: auto;
+            color: #fff;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        #crafting-panel h2 {
+            color: #00aaff;
+            text-align: center;
+        }
+        .craft-btn {
+            background: #00aaff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            font-weight: bold;
+            margin: 5px 0;
+            width: 100%;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .craft-btn:active {
+            background: #0088cc;
+        }
+        #message-log {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #ffaa00;
+            pointer-events: none;
+            z-index: 15;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #pause-menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            pointer-events: auto;
+        }
+        #pause-menu button {
+            background: #ffaa00;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px;
+            cursor: pointer;
+            width: 200px;
+        }
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            color: white;
+            font-size: 24px;
+            flex-direction: column;
+        }
+        #loading .spinner {
+            border: 5px solid #333;
+            border-top: 5px solid #ffaa00;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <h2>⚙️ Soshial Admin</h2>
-    <ul>
-      <li onclick="showSection('dashboard')">📊 الإحصائيات</li>
-      <li onclick="showSection('users')">👤 المستخدمين</li>
-      <li onclick="showSection('posts')">🖼️ المنشورات</li>
-      <li onclick="showSection('videos')">🎥 الفيديوهات</li>
-      <li onclick="showSection('live')">📺 البثوث</li>
-      <li onclick="showSection('gifts')">🎁 الهدايا</li>
-      <li onclick="showSection('coins')">💰 الكوينز</li>
-      <li onclick="showSection('settings')">🔧 الإعدادات</li>
-    </ul>
-  </aside>
+    <div id="loading">
+        <div class="spinner"></div>
+        <div>Loading Alien Apocalypse...</div>
+    </div>
 
-  <main class="main">
-    <header><h1>مرحباً بك يا مدير المنصة 👑</h1></header>
+    <div id="info">🚀 ALIEN APOCALYPSE: LAST FLIGHT</div>
+    <div id="stats">
+        ❤️ <span id="health">100</span> | 🍗 <span id="hunger">100</span> | 💧 <span id="thirst">100</span><br>
+        ⚡ <span id="stamina">100</span> | 🎒 <span id="item-count">0</span> items
+    </div>
+    <div id="mission">🎯 Mission: Escape the plane and survive!</div>
+    <div id="message-log"></div>
 
-    <section id="dashboard" class="panel active">
-      <h2>📊 الإحصائيات العامة</h2>
-      <p>المستخدمين: <span id="userCount">0</span></p>
-      <p>المنشورات: <span id="postCount">0</span></p>
-      <p>الفيديوهات: <span id="videoCount">0</span></p>
-      <p>البثوث: <span id="liveCount">0</span></p>
-      <p>الهدايا: <span id="giftCount">0</span></p>
-    </section>
+    <div id="controls">
+        <div id="joystick-area">
+            <div id="joystick"></div>
+        </div>
+        <div id="action-buttons">
+            <div class="btn" id="btn-attack">⚔️</div>
+            <div class="btn" id="btn-interact">✋</div>
+            <div class="btn" id="btn-inventory">🎒</div>
+            <div class="btn" id="btn-craft">🔨</div>
+            <div class="btn" id="btn-pause">⏸️</div>
+        </div>
+    </div>
 
-    <section id="users" class="panel"><h2>👤 إدارة المستخدمين</h2><ul id="userList"></ul></section>
-    <section id="posts" class="panel"><h2>🖼️ إدارة المنشورات</h2><ul id="postList"></ul></section>
-    <section id="videos" class="panel"><h2>🎥 إدارة الفيديوهات</h2><ul id="videoList"></ul></section>
-    <section id="live" class="panel"><h2>📺 البثوث المباشرة</h2><ul id="liveList"></ul></section>
-    <section id="gifts" class="panel"><h2>🎁 إدارة الهدايا</h2><ul id="giftList"></ul></section>
+    <div id="inventory-panel">
+        <h3>INVENTORY</h3>
+        <div id="inv-list"></div>
+        <button class="craft-btn" id="close-inv" style="margin-top:10px;">CLOSE</button>
+    </div>
 
-    <section id="coins" class="panel">
-      <h2>💰 شحن الكوينز</h2>
-      <input type="text" id="userIdInput" placeholder="ID المستخدم" />
-      <input type="number" id="coinAmount" placeholder="عدد الكوينز" />
-      <button id="chargeCoinsBtn">شحن</button>
-    </section>
+    <div id="crafting-panel">
+        <h2>CRAFTING</h2>
+        <div id="craft-list"></div>
+        <button class="craft-btn" id="close-craft" style="margin-top:10px; background:#ff5555;">CLOSE</button>
+    </div>
 
-    <section id="settings" class="panel">
-      <h2>🔧 إعدادات إضافية</h2>
-      <p>هنا تقدر تضيف صلاحيات، ميزات جديدة، أو تعديلات على النظام.</p>
-    </section>
-  </main>
+    <div id="pause-menu">
+        <h2 style="color:#ffaa00; margin-bottom:30px;">PAUSED</h2>
+        <button id="resume-btn">RESUME</button>
+        <button id="reset-btn">RESTART</button>
+    </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-  <script src="script.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        // --- GAME STATE ---
+        const state = {
+            health: 100,
+            hunger: 100,
+            thirst: 100,
+            stamina: 100,
+            maxStamina: 100,
+            inventory: {},
+            isPaused: false,
+            gameOver: false,
+            missionPhase: 'plane', // plane, landed, survival
+            countdown: 60, // seconds until plane crash
+            parachuteDeployed: false,
+            alienShips: [],
+            aliens: [],
+            resources: [],
+            player: null,
+            velocity: new THREE.Vector3(),
+            moveJoystick: { x: 0, y: 0 },
+            attackCooldown: 0,
+            interactCooldown: 0,
+            lastTime: performance.now(),
+            keys: {},
+            scene: null,
+            camera: null,
+            renderer: null,
+            labelRenderer: null,
+            clock: new THREE.Clock(),
+            raycast: new THREE.Raycaster(),
+            ground: null,
+            plane: null,
+            aircraftGroup: null,
+            particles: [],
+            explosions: [],
+            smokeParticles: [],
+            particleSystem: null,
+            parachute: null,
+            vehicle: null,
+            buildings: [],
+            trees: [],
+            alienBases: [],
+            missionText: "",
+            audioCtx: null,
+            soundEnabled: true,
+            touchStart: null,
+            touchCurrent: null,
+            joystickActive: false,
+            joystickCenter: { x: 0, y: 0 },
+            joystickRadius: 50,
+            gameStarted: false,
+            cameraOffset: new THREE.Vector3(0, 3, 8),
+            cameraLookAt: new THREE.Vector3(0, 1, 0),
+            playerModel: null,
+            playerGroup: null,
+            otherObjects: [],
+            npcs: [],
+            missionObjects: [],
+            usableVehicles: [],
+            lastSave: 0,
+            buildMode: false,
+            selectedBuildItem: null,
+            aimLine: null,
+        };
+
+        // --- DOM ELEMENTS ---
+        const loadingEl = document.getElementById('loading');
+        const healthEl = document.getElementById('health');
+        const hungerEl = document.getElementById('hunger');
+        const thirstEl = document.getElementById('thirst');
+        const staminaEl = document.getElementById('stamina');
+        const itemCountEl = document.getElementById('item-count');
+        const missionEl = document.getElementById('mission');
+        const messageLogEl = document.getElementById('message-log');
+        const inventoryPanel = document.getElementById('inventory-panel');
+        const craftingPanel = document.getElementById('crafting-panel');
+        const pauseMenu = document.getElementById('pause-menu');
+        const invList = document.getElementById('inv-list');
+        const craftList = document.getElementById('craft-list');
+        const joystickArea = document.getElementById('joystick-area');
+        const joystickEl = document.getElementById('joystick');
+
+        // --- AUDIO CONTEXT ---
+        function initAudio() {
+            if (!state.audioCtx) {
+                state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (state.audioCtx.state === 'suspended') {
+                state.audioCtx.resume();
+            }
+        }
+        function playSound(freq, duration, type = 'sine', volume = 0.1) {
+            if (!state.audioCtx || !state.soundEnabled) return;
+            try {
+                const osc = state.audioCtx.createOscillator();
+                const gain = state.audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.value = volume;
+                gain.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(state.audioCtx.destination);
+                osc.start();
+                osc.stop(state.audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // --- MESSAGE LOG ---
+        let messageTimeout;
+        function showMessage(text, duration = 2000) {
+            messageLogEl.textContent = text;
+            messageLogEl.style.opacity = '1';
+            clearTimeout(messageTimeout);
+            messageTimeout = setTimeout(() => {
+                messageLogEl.style.opacity = '0';
+            }, duration);
+        }
+
+        // --- INVENTORY & CRAFTING ---
+        const recipes = [
+            { name: 'Axe', requires: { 'Wood': 3, 'Stone': 2 }, result: 'Axe', desc: 'A sturdy axe for chopping.' },
+            { name: 'Pickaxe', requires: { 'Wood': 2, 'Stone': 3 }, result: 'Pickaxe', desc: 'Mine rocks and aliens.' },
+            { name: 'Pistol', requires: { 'Metal': 5, 'Wood': 2 }, result: 'Pistol', desc: 'A basic firearm.' },
+            { name: 'Ammo', requires: { 'Metal': 2, 'Alien Alloy': 1 }, result: 'Ammo', desc: 'Ammunition for firearms.' },
+            { name: 'Medkit', requires: { 'Plant Fiber': 3, 'Alien Blood': 1 }, result: 'Medkit', desc: 'Heals 30 HP.' },
+            { name: 'Water Bottle', requires: { 'Plastic': 2 }, result: 'Water Bottle', desc: 'Restores thirst.' },
+            { name: 'Cooked Meat', requires: { 'Raw Meat': 1, 'Wood': 1 }, result: 'Cooked Meat', desc: 'Restores hunger.' },
+            { name: 'Torch', requires: { 'Wood': 2, 'Plant Fiber': 2 }, result: 'Torch', desc: 'Light in darkness.' },
+            { name: 'Parachute', requires: { 'Fabric': 5, 'Rope': 3 }, result: 'Parachute', desc: 'Essential for escape.' },
+            { name: 'Radio Transmitter', requires: { 'Metal': 8, 'Electronics': 4, 'Alien Alloy': 2 }, result: 'Radio Transmitter', desc: 'Contact the resistance.' },
+        ];
+
+        function addItem(name, qty = 1) {
+            if (state.inventory[name]) {
+                state.inventory[name] += qty;
+            } else {
+                state.inventory[name] = qty;
+            }
+            updateInventoryUI();
+            playSound(800, 0.1, 'square', 0.05);
+        }
+
+        function removeItem(name, qty = 1) {
+            if (state.inventory[name] && state.inventory[name] >= qty) {
+                state.inventory[name] -= qty;
+                if (state.inventory[name] <= 0) delete state.inventory[name];
+                updateInventoryUI();
+                return true;
+            }
+            return false;
+        }
+
+        function updateInventoryUI() {
+            const items = Object.entries(state.inventory);
+            const count = items.reduce((sum, [_, qty]) => sum + qty, 0);
+            itemCountEl.textContent = count;
+
+            invList.innerHTML = items.map(([name, qty]) => 
+                `<div class="inv-item">
+                    <span>${name} x${qty}</span>
+                    <button onclick="window.useItem('${name}')">Use</button>
+                </div>`
+            ).join('') || '<div style="color:#888;">Empty</div>';
+        }
+
+        window.useItem = function(name) {
+            if (name === 'Medkit') {
+                if (state.health < 100) {
+                    state.health = Math.min(100, state.health + 30);
+                    removeItem('Medkit');
+                    showMessage('Used Medkit: +30 HP');
+                    playSound(600, 0.2, 'sine');
+                } else {
+                    showMessage('Health already full!');
+                }
+            } else if (name === 'Water Bottle') {
+                if (state.thirst < 100) {
+                    state.thirst = Math.min(100, state.thirst + 40);
+                    removeItem('Water Bottle');
+                    showMessage('Drank water: +40 Thirst');
+                    playSound(500, 0.15, 'sine');
+                } else {
+                    showMessage('Not thirsty!');
+                }
+            } else if (name === 'Cooked Meat') {
+                if (state.hunger < 100) {
+                    state.hunger = Math.min(100, state.hunger + 35);
+                    removeItem('Cooked Meat');
+                    showMessage('Ate meat: +35 Hunger');
+                    playSound(400, 0.2, 'sine');
+                } else {
+                    showMessage('Not hungry!');
+                }
+            } else if (name === 'Parachute') {
+                if (state.missionPhase === 'plane' && !state.parachuteDeployed) {
+                    deployParachute();
+                } else {
+                    showMessage('Cannot use parachute now.');
+                }
+            } else if (name === 'Radio Transmitter') {
+                if (state.missionPhase === 'survival') {
+                    showMessage('You contact the human resistance! They are coming...');
+                    state.missionPhase = 'contacted';
+                    setTimeout(() => showMessage('RESCUE INCOMING. HOLD ON!'), 3000);
+                    setTimeout(() => { showMessage('YOU SURVIVED! THE RESISTANCE SAVED YOU. 🎉'); state.gameOver = true; }, 6000);
+                } else {
+                    showMessage('Need to survive first.');
+                }
+            } else if (name === 'Pistol') {
+                showMessage('Pistol equipped. Use attack button!');
+            } else if (name === 'Axe') {
+                showMessage('Axe equipped. Chop trees for wood!');
+            } else if (name === 'Pickaxe') {
+                showMessage('Pickaxe equipped. Mine rocks for stone!');
+            } else {
+                showMessage('Cannot use this item directly.');
+            }
+            updateInventoryUI();
+        };
+
+        function showCrafting() {
+            craftingPanel.style.display = 'block';
+            renderCrafting();
+        }
+        function renderCrafting() {
+            craftList.innerHTML = recipes.map(r => {
+                const canCraft = Object.entries(r.requires).every(([item, qty]) => (state.inventory[item] || 0) >= qty);
+                return `<div style="margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>${r.name}</strong><br><small style="color:#aaa;">${r.desc}</small></div>
+                        <button class="craft-btn" style="width:auto; padding:5px 12px; background:${canCraft ? '#00aaff' : '#555'};" 
+                            onclick="${canCraft ? `window.craftItem('${r.name}')` : ''}" ${!canCraft ? 'disabled' : ''}>Craft</button>
+                    </div>
+                    <div style="font-size:11px; color:#888; margin-top:3px;">Requires: ${Object.entries(r.requires).map(([i,q]) => `${i} x${q}`).join(', ')}</div>
+                </div>`;
+            }).join('');
+        }
+        window.craftItem = function(name) {
+            const recipe = recipes.find(r => r.name === name);
+            if (!recipe) return;
+            const canCraft = Object.entries(recipe.requires).every(([item, qty]) => (state.inventory[item] || 0) >= qty);
+            if (canCraft) {
+                Object.entries(recipe.requires).forEach(([item, qty]) => removeItem(item, qty));
+                addItem(recipe.result, 1);
+                showMessage(`Crafted: ${recipe.result}`);
+                playSound(900, 0.2, 'square');
+                renderCrafting();
+            } else {
+                showMessage('Not enough resources!');
+            }
+        };
+
+        // --- INIT THREE.JS SCENE ---
+        function initScene() {
+            state.scene = new THREE.Scene();
+            state.scene.background = new THREE.Color(0x1a1a2e);
+            state.scene.fog = new THREE.Fog(0x1a1a2e, 20, 100);
+
+            state.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            state.camera.position.set(0, 5, 15);
+
+            state.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+            state.renderer.setSize(window.innerWidth, window.innerHeight);
+            state.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            state.renderer.shadowMap.enabled = true;
+            state.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.body.appendChild(state.renderer.domElement);
+
+            state.labelRenderer = new CSS2DRenderer();
+            state.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            state.labelRenderer.domElement.style.position = 'absolute';
+            state.labelRenderer.domElement.style.top = '0px';
+            state.labelRenderer.domElement.style.pointerEvents = 'none';
+            document.body.appendChild(state.labelRenderer.domElement);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0x404060);
+            state.scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffeedd, 0.8);
+            dirLight.position.set(20, 40, 20);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 1024;
+            dirLight.shadow.mapSize.height = 1024;
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 100;
+            dirLight.shadow.camera.left = -40;
+            dirLight.shadow.camera.right = 40;
+            dirLight.shadow.camera.top = 40;
+            dirLight.shadow.camera.bottom = -40;
+            state.scene.add(dirLight);
+
+            // Emergency red light
+            const redLight = new THREE.PointLight(0xff0000, 0.5, 30);
+            redLight.position.set(0, 5, 0);
+            state.scene.add(redLight);
+
+            // Ground
+            const groundGeo = new THREE.PlaneGeometry(200, 200, 32, 32);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x2a2a3a, roughness: 0.9, metalness: 0.1 });
+            state.ground = new THREE.Mesh(groundGeo, groundMat);
+            state.ground.rotation.x = -Math.PI / 2;
+            state.ground.position.y = 0;
+            state.ground.receiveShadow = true;
+            state.scene.add(state.ground);
+
+            // Add some scattered rocks and debris
+            for (let i = 0; i < 50; i++) {
+                const rockGeo = new THREE.DodecahedronGeometry(Math.random() * 0.5 + 0.2);
+                const rockMat = new THREE.MeshStandardMaterial({ color: 0x555566 });
+                const rock = new THREE.Mesh(rockGeo, rockMat);
+                rock.position.set((Math.random() - 0.5) * 80, 0.2, (Math.random() - 0.5) * 80);
+                rock.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                rock.castShadow = true;
+                rock.receiveShadow = true;
+                state.scene.add(rock);
+                state.otherObjects.push(rock);
+            }
+
+            // Trees
+            for (let i = 0; i < 30; i++) {
+                const treeGroup = new THREE.Group();
+                const trunkGeo = new THREE.CylinderGeometry(0.3, 0.4, 2);
+                const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5a3a1a });
+                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                trunk.position.y = 1;
+                trunk.castShadow = true;
+                trunk.receiveShadow = true;
+                treeGroup.add(trunk);
+                const leavesGeo = new THREE.ConeGeometry(1.2, 2.5, 6);
+                const leavesMat = new THREE.MeshStandardMaterial({ color: 0x2a5a2a });
+                const leaves = new THREE.Mesh(leavesGeo, leavesMat);
+                leaves.position.y = 2.8;
+                leaves.castShadow = true;
+                treeGroup.add(leaves);
+                treeGroup.position.set((Math.random() - 0.5) * 70, 0, (Math.random() - 0.5) * 70);
+                if (treeGroup.position.length() > 15) {
+                    state.scene.add(treeGroup);
+                    state.trees.push(treeGroup);
+                }
+            }
+
+            // Create player
+            createPlayer();
+
+            // Create airplane interior
+            createAirplane();
+
+            // Create alien enemies
+            createAliens();
+
+            // Create resource nodes
+            createResourceNodes();
+
+            // Parachute
+            createParachute();
+
+            // Initial inventory
+            addItem('Parachute', 1);
+            addItem('Pistol', 1);
+            addItem('Ammo', 10);
+
+            updateInventoryUI();
+            updateStatsUI();
+
+            // Hide loading
+            loadingEl.style.display = 'none';
+        }
+
+        function createPlayer() {
+            state.playerGroup = new THREE.Group();
+            
+            // Body
+            const bodyGeo = new THREE.CapsuleGeometry(0.4, 1.2, 4, 8);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x2266cc });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.castShadow = true;
+            body.receiveShadow = true;
+            body.position.y = 0.8;
+            state.playerGroup.add(body);
+
+            // Head
+            const headGeo = new THREE.SphereGeometry(0.3, 8, 8);
+            const headMat = new THREE.MeshStandardMaterial({ color: 0xffccaa });
+            const head = new THREE.Mesh(headGeo, headMat);
+            head.castShadow = true;
+            head.position.y = 1.8;
+            state.playerGroup.add(head);
+
+            // Backpack
+            const packGeo = new THREE.BoxGeometry(0.4, 0.6, 0.3);
+            const packMat = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+            const pack = new THREE.Mesh(packGeo, packMat);
+            pack.castShadow = true;
+            pack.position.set(0, 1.1, -0.5);
+            state.playerGroup.add(pack);
+
+            state.playerGroup.position.set(0, 0, 0);
+            state.scene.add(state.playerGroup);
+            state.player = state.playerGroup;
+        }
+
+        function createAirplane() {
+            state.aircraftGroup = new THREE.Group();
+            
+            // Fuselage
+            const fuselageGeo = new THREE.CylinderGeometry(3, 3, 20, 12);
+            const fuselageMat = new THREE.MeshStandardMaterial({ color: 0xccccdd, metalness: 0.6, roughness: 0.4 });
+            const fuselage = new THREE.Mesh(fuselageGeo, fuselageMat);
+            fuselage.rotation.z = Math.PI / 2;
+            fuselage.castShadow = true;
+            fuselage.receiveShadow = true;
+            fuselage.position.y = 8;
+            state.aircraftGroup.add(fuselage);
+
+            // Wings
+            const wingGeo = new THREE.BoxGeometry(25, 0.3, 4);
+            const wingMat = new THREE.MeshStandardMaterial({ color: 0xaaaacc, metalness: 0.5 });
+            const wing = new THREE.Mesh(wingGeo, wingMat);
+            wing.position.set(0, 8.5, 0);
+            wing.castShadow = true;
+            state.aircraftGroup.add(wing);
+
+            // Tail
+            const tailGeo = new THREE.BoxGeometry(0.3, 3, 5);
+            const tailMat = new THREE.MeshStandardMaterial({ color: 0xaaaacc });
+            const tail = new THREE.Mesh(tailGeo, tailMat);
+            tail.position.set(-9, 9.5, 0);
+            tail.castShadow = true;
+            state.aircraftGroup.add(tail);
+
+            // Windows
+            for (let i = -8; i <= 8; i += 2) {
+                const windowGeo = new THREE.SphereGeometry(0.4, 6, 6);
+                const windowMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x224466 });
+                const windowMesh = new THREE.Mesh(windowGeo, windowMat);
+                windowMesh.position.set(i, 8.5, 2.8);
+                state.aircraftGroup.add(windowMesh);
+                const windowMesh2 = windowMesh.clone();
+                windowMesh2.position.z = -2.8;
+                state.aircraftGroup.add(windowMesh2);
+            }
+
+            // Damage effects - smoke particles
+            for (let i = 0; i < 20; i++) {
+                const smokeGeo = new THREE.SphereGeometry(0.3, 4, 4);
+                const smokeMat = new THREE.MeshBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.4 });
+                const smoke = new THREE.Mesh(smokeGeo, smokeMat);
+                smoke.position.set((Math.random() - 0.5) * 15, 7 + Math.random() * 3, (Math.random() - 0.5) * 5);
+                smoke.userData.velocity = new THREE.Vector3((Math.random() - 0.5) * 0.02, Math.random() * 0.03, (Math.random() - 0.5) * 0.02);
+                smoke.userData.life = 1;
+                state.aircraftGroup.add(smoke);
+                state.smokeParticles.push(smoke);
+            }
+
+            state.aircraftGroup.position.set(0, 0, -20);
+            state.scene.add(state.aircraftGroup);
+            state.plane = state.aircraftGroup;
+
+            // Add some crates inside the plane as resources
+            for (let i = 0; i < 5; i++) {
+                const crateGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+                const crateMat = new THREE.MeshStandardMaterial({ color: 0x8B5A2B });
+                const crate = new THREE.Mesh(crateGeo, crateMat);
+                crate.position.set((Math.random() - 0.5) * 8, 0.3, 2 + (Math.random() - 0.5) * 3);
+                crate.castShadow = true;
+                crate.receiveShadow = true;
+                crate.userData.type = 'resource';
+                crate.userData.resource = ['Wood', 'Metal', 'Fabric', 'Rope'][Math.floor(Math.random() * 4)];
+                crate.userData.amount = 2 + Math.floor(Math.random() * 3);
+                crate.userData.label = crate.userData.resource;
+                state.aircraftGroup.add(crate);
+                state.resources.push(crate);
+            }
+        }
+
+        function createAliens() {
+            // Flying drones
+            for (let i = 0; i < 5; i++) {
+                const droneGroup = new THREE.Group();
+                const bodyGeo = new THREE.SphereGeometry(0.6, 8, 8);
+                const bodyMat = new THREE.MeshStandardMaterial({ color: 0xaa2222, emissive: 0x330000 });
+                const body = new THREE.Mesh(bodyGeo, bodyMat);
+                body.castShadow = true;
+                droneGroup.add(body);
+
+                const eyeGeo = new THREE.SphereGeometry(0.15, 6, 6);
+                const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00 });
+                const eye = new THREE.Mesh(eyeGeo, eyeMat);
+                eye.position.set(0.3, 0.2, 0.5);
+                droneGroup.add(eye);
+
+                droneGroup.position.set((Math.random() - 0.5) * 60, 15 + Math.random() * 20, (Math.random() - 0.5) * 60);
+                droneGroup.userData = { type: 'drone', health: 30, speed: 0.05, attackCooldown: 0, target: null };
+                state.scene.add(droneGroup);
+                state.aliens.push(droneGroup);
+                state.alienShips.push(droneGroup);
+            }
+
+            // Ground aliens
+            for (let i = 0; i < 8; i++) {
+                const alienGroup = new THREE.Group();
+                const bodyGeo = new THREE.CapsuleGeometry(0.5, 0.8, 4, 8);
+                const bodyMat = new THREE.MeshStandardMaterial({ color: 0x33aa33, emissive: 0x002200 });
+                const body = new THREE.Mesh(bodyGeo, bodyMat);
+                body.castShadow = true;
+                body.position.y = 0.9;
+                alienGroup.add(body);
+
+                const headGeo = new THREE.SphereGeometry(0.35, 6, 6);
+                const headMat = new THREE.MeshStandardMaterial({ color: 0x33cc33 });
+                const head = new THREE.Mesh(headGeo, headMat);
+                head.castShadow = true;
+                head.position.y = 1.7;
+                alienGroup.add(head);
+
+                const eye1 = new THREE.Mesh(new THREE.SphereGeometry(0.1, 4, 4), new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000 }));
+                eye1.position.set(0.15, 1.8, 0.25);
+                alienGroup.add(eye1);
+                const eye2 = eye1.clone();
+                eye2.position.set(-0.15, 1.8, 0.25);
+                alienGroup.add(eye2);
+
+                alienGroup.position.set((Math.random() - 0.5) * 70, 0, (Math.random() - 0.5) * 70);
+                if (alienGroup.position.length() > 10) {
+                    alienGroup.userData = { type: 'ground', health: 50, speed: 0.03, attackCooldown: 0, target: null, patrolOrigin: alienGroup.position.clone() };
+                    state.scene.add(alienGroup);
+                    state.aliens.push(alienGroup);
+                }
+            }
+        }
+
+        function createResourceNodes() {
+            // Rocks (stone)
+            for (let i = 0; i < 20; i++) {
+                const rockGeo = new THREE.DodecahedronGeometry(0.6 + Math.random() * 0.4);
+                const rockMat = new THREE.MeshStandardMaterial({ color: 0x888899 });
+                const rock = new THREE.Mesh(rockGeo, rockMat);
+                rock.position.set((Math.random() - 0.5) * 70, 0.3, (Math.random() - 0.5) * 70);
+                if (rock.position.length() > 10) {
+                    rock.castShadow = true;
+                    rock.receiveShadow = true;
+                    rock.userData = { type: 'resource', resource: 'Stone', amount: 3 + Math.floor(Math.random() * 3) };
+                    state.scene.add(rock);
+                    state.resources.push(rock);
+                }
+            }
+            // Plants (fiber)
+            for (let i = 0; i < 15; i++) {
+                const plantGeo = new THREE.ConeGeometry(0.3, 0.8, 5);
+                const plantMat = new THREE.MeshStandardMaterial({ color: 0x44aa44 });
+                const plant = new THREE.Mesh(plantGeo, plantMat);
+                plant.position.set((Math.random() - 0.5) * 70, 0.4, (Math.random() - 0.5) * 70);
+                if (plant.position.length() > 10) {
+                    plant.castShadow = true;
+                    plant.userData = { type: 'resource', resource: 'Plant Fiber', amount: 2 + Math.floor(Math.random() * 2) };
+                    state.scene.add(plant);
+                    state.resources.push(plant);
+                }
+            }
+            // Metal debris
+            for (let i = 0; i < 12; i++) {
+                const metalGeo = new THREE.BoxGeometry(0.5, 0.2, 0.8);
+                const metalMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.8, roughness: 0.3 });
+                const metal = new THREE.Mesh(metalGeo, metalMat);
+                metal.position.set((Math.random() - 0.5) * 70, 0.2, (Math.random() - 0.5) * 70);
+                metal.rotation.y = Math.random() * Math.PI;
+                if (metal.position.length() > 10) {
+                    metal.castShadow = true;
+                    metal.receiveShadow = true;
+                    metal.userData = { type: 'resource', resource: 'Metal', amount: 2 + Math.floor(Math.random() * 3) };
+                    state.scene.add(metal);
+                    state.resources.push(metal);
+                }
+            }
+        }
+
+        function createParachute() {
+            const chuteGroup = new THREE.Group();
+            const canopyGeo = new THREE.SphereGeometry(2, 8, 8);
+            const canopyMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
+            const canopy = new THREE.Mesh(canopyGeo, canopyMat);
+            canopy.position.y = 0;
+            chuteGroup.add(canopy);
+            // Ropes
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                const lineGeo = new THREE.CylinderGeometry(0.02, 0.02, 1.5);
+                const lineMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                const line = new THREE.Mesh(lineGeo, lineMat);
+                line.position.set(Math.cos(angle) * 1.5, -0.75, Math.sin(angle) * 1.5);
+                line.rotation.z = Math.cos(angle) * 0.5;
+                line.rotation.x = Math.sin(angle) * 0.5;
+                chuteGroup.add(line);
+            }
+            chuteGroup.visible = false;
+            chuteGroup.position.y = 3;
+            state.playerGroup.add(chuteGroup);
+            state.parachute = chuteGroup;
+        }
+
+        function deployParachute() {
+            if (state.parachuteDeployed) return;
+            state.parachuteDeployed = true;
+            state.parachute.visible = true;
+            state.missionPhase = 'landed';
+            showMessage('PARACHUTE DEPLOYED! You are safe... for now.');
+            missionEl.textContent = '🎯 Mission: Survive! Find resources and craft a radio.';
+            // Remove plane after a while
+            setTimeout(() => {
+                if (state.aircraftGroup) {
+                    state.scene.remove(state.aircraftGroup);
+                    state.aircraftGroup = null;
+                    state.plane = null;
+                    // Spawn some extra resources on ground
+                    for (let i = 0; i < 10; i++) {
+                        const crateGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+                        const crateMat = new THREE.MeshStandardMaterial({ color: 0x8B5A2B });
+                        const crate = new THREE.Mesh(crateGeo, crateMat);
+                        crate.position.set((Math.random() - 0.5) * 30, 0.3, (Math.random() - 0.5) * 30);
+                        crate.castShadow = true;
+                        crate.receiveShadow = true;
+                        crate.userData = { type: 'resource', resource: ['Wood', 'Metal', 'Fabric', 'Rope', 'Electronics'][Math.floor(Math.random() * 5)], amount: 2 + Math.floor(Math.random() * 3) };
+                        state.scene.add(crate);
+                        state.resources.push(crate);
+                    }
+                }
+            }, 3000);
+            playSound(600, 0.3, 'sine');
+            playSound(800, 0.3, 'sine');
+        }
+
+        // --- GAME UPDATE ---
+        function updateGame(delta) {
+            if (state.gameOver) return;
+
+            // Update countdown in plane phase
+            if (state.missionPhase === 'plane' && !state.parachuteDeployed) {
+                state.countdown -= delta;
+                if (state.countdown <= 0) {
+                    // Crash
+                    state.health = 0;
+                    state.gameOver = true;
+                    showMessage('THE PLANE CRASHED. YOU DIED. 💀', 9999);
+                    playSound(100, 1, 'sawtooth', 0.3);
+                }
+                if (state.countdown < 10 && state.countdown > 9) {
+                    showMessage('⚠️ CRITICAL: ESCAPE NOW! USE PARACHUTE! ⚠️', 3000);
+                    playSound(1200, 0.2, 'square');
+                }
+                if (state.countdown < 5 && state.countdown > 4) {
+                    showMessage('⚠️ PLANE GOING DOWN! ⚠️', 2000);
+                }
+            }
+
+            // Update stats over time
+            if (state.missionPhase !== 'plane') {
+                state.hunger = Math.max(0, state.hunger - delta * 0.5);
+                state.thirst = Math.max(0, state.thirst - delta * 0.8);
+                if (state.hunger <= 0 || state.thirst <= 0) {
+                    state.health = Math.max(0, state.health - delta * 5);
+                }
+                if (state.health <= 0) {
+                    state.gameOver = true;
+                    showMessage('YOU DIED. GAME OVER. 💀', 9999);
+                    playSound(80, 1.5, 'sawtooth', 0.3);
+                }
+            }
+
+            // Stamina regen
+            state.stamina = Math.min(state.maxStamina, state.stamina + delta * 10);
+
+            // Player movement
+            const moveSpeed = 5 * delta;
+            let moveX = 0, moveZ = 0;
+            if (state.moveJoystick.x !== 0 || state.moveJoystick.y !== 0) {
+                const angle = Math.atan2(state.moveJoystick.x, state.moveJoystick.y);
+                moveX = Math.sin(angle) * moveSpeed * Math.min(1, Math.hypot(state.moveJoystick.x, state.moveJoystick.y));
+                moveZ = Math.cos(angle) * moveSpeed * Math.min(1, Math.hypot(state.moveJoystick.x, state.moveJoystick.y));
+            }
+            // Keyboard controls for desktop testing
+            if (state.keys['KeyW']) moveZ -= moveSpeed;
+            if (state.keys['KeyS']) moveZ += moveSpeed;
+            if (state.keys['KeyA']) moveX -= moveSpeed;
+            if (state.keys['KeyD']) moveX += moveSpeed;
+
+            if (moveX !== 0 || moveZ !== 0) {
+                // Check collision with ground
+                state.playerGroup.position.x += moveX;
+                state.playerGroup.position.z += moveZ;
+                // Keep player in bounds
+                state.playerGroup.position.x = Math.max(-90, Math.min(90, state.playerGroup.position.x));
+                state.playerGroup.position.z = Math.max(-90, Math.min(90, state.playerGroup.position.z));
+                // Rotate player to face movement direction
+                if (moveX !== 0 || moveZ !== 0) {
+                    const targetRot = Math.atan2(moveX, moveZ);
+                    state.playerGroup.rotation.y = targetRot;
+                }
+            }
+
+            // Camera follow
+            const camOffset = new THREE.Vector3(0, 4, 8);
+            if (state.missionPhase === 'plane' && !state.parachuteDeployed) {
+                camOffset.set(0, 3, 6);
+            }
+            const targetCamPos = state.playerGroup.position.clone().add(camOffset);
+            state.camera.position.lerp(targetCamPos, 0.1);
+            state.camera.lookAt(state.playerGroup.position.clone().add(new THREE.Vector3(0, 1.5, 0)));
+
+            // Update aliens
+            state.aliens.forEach(alien => {
+                if (!alien.parent) return;
+                const alienData = alien.userData;
+                const distToPlayer = alien.position.distanceTo(state.playerGroup.position);
+                
+                if (alienData.type === 'drone') {
+                    // Fly towards player if close
+                    if (distToPlayer < 30) {
+                        const dir = state.playerGroup.position.clone().sub(alien.position).normalize();
+                        alien.position.add(dir.multiplyScalar(alienData.speed * delta * 60));
+                        alien.lookAt(state.playerGroup.position);
+                    } else {
+                        // Patrol
+                        alien.position.y += Math.sin(Date.now() * 0.001 + alien.id) * 0.01;
+                    }
+                    // Attack
+                    if (distToPlayer < 8 && alienData.attackCooldown <= 0) {
+                        state.health -= 8;
+                        alienData.attackCooldown = 60;
+                        showMessage('Drone hit you! -8 HP');
+                        playSound(300, 0.2, 'sawtooth', 0.15);
+                    }
+                    alienData.attackCooldown -= delta * 60;
+                } else if (alienData.type === 'ground') {
+                    // Ground alien AI
+                    if (distToPlayer < 25) {
+                        // Chase player
+                        const dir = state.playerGroup.position.clone().sub(alien.position);
+                        dir.y = 0;
+                        dir.normalize();
+                        alien.position.add(dir.multiplyScalar(alienData.speed * delta * 60));
+                        alien.lookAt(state.playerGroup.position.x, 0, state.playerGroup.position.z);
+                        // Attack
+                        if (distToPlayer < 3 && alienData.attackCooldown <= 0) {
+                            state.health -= 12;
+                            alienData.attackCooldown = 90;
+                            showMessage('Alien hit you! -12 HP');
+                            playSound(250, 0.3, 'sawtooth', 0.2);
+                        }
+                    } else {
+                        // Patrol around origin
+                        const patrolDir = new THREE.Vector3(
+                            Math.sin(Date.now() * 0.0005 + alien.id) * 5,
+                            0,
+                            Math.cos(Date.now() * 0.0005 + alien.id) * 5
+                        );
+                        const targetPos = alienData.patrolOrigin.clone().add(patrolDir);
+                        const dir = targetPos.sub(alien.position);
+                        dir.y = 0;
+                        if (dir.length() > 0.5) {
+                            dir.normalize();
+                            alien.position.add(dir.multiplyScalar(alienData.speed * delta * 30));
+                        }
+                    }
+                    alienData.attackCooldown -= delta * 60;
+                }
+            });
+
+            // Update smoke particles
+            state.smokeParticles.forEach(smoke => {
+                if (smoke.parent) {
+                    smoke.position.add(smoke.userData.velocity);
+                    smoke.userData.life -= delta;
+                    smoke.material.opacity = Math.max(0, smoke.userData.life * 0.4);
+                    if (smoke.userData.life <= 0) {
+                        smoke.visible = false;
+                    }
+                }
+            });
+
+            // Update UI stats
+            updateStatsUI();
+
+            // Check for mission completion
+            if (state.missionPhase === 'survival' && state.inventory['Radio Transmitter']) {
+                missionEl.textContent = '🎯 Mission: Use Radio Transmitter to contact resistance!';
+            }
+
+            // Save game periodically
+            if (performance.now() - state.lastSave > 30000) {
+                saveGame();
+                state.lastSave = performance.now();
+            }
+        }
+
+        function updateStatsUI() {
+            healthEl.textContent = Math.floor(state.health);
+            hungerEl.textContent = Math.floor(state.hunger);
+            thirstEl.textContent = Math.floor(state.thirst);
+            staminaEl.textContent = Math.floor(state.stamina);
+            
+            // Update mission text
+            if (state.missionPhase === 'plane' && !state.parachuteDeployed) {
+                missionEl.textContent = `🎯 Mission: Escape the plane! Countdown: ${Math.ceil(state.countdown)}s`;
+            } else if (state.missionPhase === 'landed') {
+                missionEl.textContent = '🎯 Mission: Survive and find resources!';
+                setTimeout(() => {
+                    if (state.missionPhase === 'landed') {
+                        state.missionPhase = 'survival';
+                        missionEl.textContent = '🎯 Mission: Craft a Radio Transmitter and contact resistance.';
+                    }
+                }, 5000);
+            }
+        }
+
+        // --- TOUCH CONTROLS ---
+        function setupControls() {
+            // Joystick
+            joystickArea.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                initAudio();
+                const touch = e.touches[0];
+                const rect = joystickArea.getBoundingClientRect();
+                state.joystickCenter.x = rect.left + rect.width / 2;
+                state.joystickCenter.y = rect.top + rect.height / 2;
+                state.joystickActive = true;
+                updateJoystick(touch.clientX, touch.clientY);
+            });
+            joystickArea.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (state.joystickActive) {
+                    const touch = e.touches[0];
+                    updateJoystick(touch.clientX, touch.clientY);
+                }
+            });
+            joystickArea.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                state.joystickActive = false;
+                state.moveJoystick = { x: 0, y: 0 };
+                joystickEl.style.transform = `translate(0px, 0px)`;
+            });
+
+            // Keyboard for desktop
+            window.addEventListener('keydown', (e) => {
+                state.keys[e.code] = true;
+                if (e.code === 'Space') e.preventDefault();
+            });
+            window.addEventListener('keyup', (e) => {
+                state.keys[e.code] = false;
+            });
+
+            // Buttons
+            document.getElementById('btn-attack').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                initAudio();
+                performAttack();
+            });
+            document.getElementById('btn-interact').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                initAudio();
+                performInteract();
+            });
+            document.getElementById('btn-inventory').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                initAudio();
+                toggleInventory();
+            });
+            document.getElementById('btn-craft').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                initAudio();
+                toggleCrafting();
+            });
+            document.getElementById('btn-pause').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                initAudio();
+                togglePause();
+            });
+
+            // Also mouse events for desktop testing
+            document.getElementById('btn-attack').addEventListener('mousedown', (e) => { e.preventDefault(); performAttack(); });
+            document.getElementById('btn-interact').addEventListener('mousedown', (e) => { e.preventDefault(); performInteract(); });
+            document.getElementById('btn-inventory').addEventListener('mousedown', (e) => { e.preventDefault(); toggleInventory(); });
+            document.getElementById('btn-craft').addEventListener('mousedown', (e) => { e.preventDefault(); toggleCrafting(); });
+            document.getElementById('btn-pause').addEventListener('mousedown', (e) => { e.preventDefault(); togglePause(); });
+
+            document.getElementById('close-inv').addEventListener('click', () => {
+                inventoryPanel.style.display = 'none';
+            });
+            document.getElementById('close-craft').addEventListener('click', () => {
+                craftingPanel.style.display = 'none';
+            });
+            document.getElementById('resume-btn').addEventListener('click', () => {
+                togglePause();
+            });
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                location.reload();
+            });
+        }
+
+        function updateJoystick(touchX, touchY) {
+            const dx = touchX - state.joystickCenter.x;
+            const dy = touchY - state.joystickCenter.y;
+            const dist = Math.min(state.joystickRadius, Math.hypot(dx, dy));
+            const angle = Math.atan2(dy, dx);
+            const limitedX = Math.cos(angle) * dist;
+            const limitedY = Math.sin(angle) * dist;
+            
+            state.moveJoystick.x = limitedX / state.joystickRadius;
+            state.moveJoystick.y = -limitedY / state.joystickRadius;
+            
+            joystickEl.style.transform = `translate(${limitedX}px, ${limitedY}px)`;
+        }
+
+        function toggleInventory() {
+            const panel = inventoryPanel;
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (panel.style.display === 'block') {
+                updateInventoryUI();
+                craftingPanel.style.display = 'none';
+            }
+        }
+
+        function toggleCrafting() {
+            const panel = craftingPanel;
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (panel.style.display === 'block') {
+                renderCrafting();
+                inventoryPanel.style.display = 'none';
+            }
+        }
+
+        function togglePause() {
+            state.isPaused = !state.isPaused;
+            pauseMenu.style.display = state.isPaused ? 'flex' : 'none';
+        }
+
+        function performAttack() {
+            if (state.attackCooldown > 0) return;
+            state.attackCooldown = 0.5;
+            
+            // Find nearest alien in range
+            let nearestAlien = null;
+            let nearestDist = 8;
+            state.aliens.forEach(alien => {
+                const dist = alien.position.distanceTo(state.playerGroup.position);
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearestAlien = alien;
+                }
+            });
+            
+            if (nearestAlien) {
+                nearestAlien.userData.health -= 15;
+                showMessage('Hit alien! -15 HP');
+                playSound(700, 0.1, 'square', 0.15);
+                if (nearestAlien.userData.health <= 0) {
+                    showMessage('Alien destroyed!');
+                    state.scene.remove(nearestAlien);
+                    state.aliens = state.aliens.filter(a => a !== nearestAlien);
+                    addItem('Alien Alloy', 1);
+                    playSound(400, 0.3, 'sawtooth', 0.2);
+                }
+            } else {
+                // Swing effect
+                showMessage('Swinging...');
+                playSound(300, 0.1, 'triangle', 0.05);
+            }
+        }
+
+        function performInteract() {
+            // Check for nearby resources
+            let nearestResource = null;
+            let nearestDist = 3;
+            state.resources.forEach(res => {
+                if (!res.parent) return;
+                const dist = res.position.distanceTo(state.playerGroup.position);
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearestResource = res;
+                }
+            });
+            
+            if (nearestResource) {
+                const resourceName = nearestResource.userData.resource || nearestResource.userData.label;
+                const amount = nearestResource.userData.amount || 1;
+                addItem(resourceName, amount);
+                showMessage(`Collected ${resourceName} x${amount}`);
+                state.scene.remove(nearestResource);
+                state.resources = state.resources.filter(r => r !== nearestResource);
+                playSound(800, 0.1, 'sine', 0.1);
+            } else {
+                // Check for plane resources
+                if (state.aircraftGroup) {
+                    let nearestCrate = null;
+                    let nearestCrateDist = 3;
+                    state.aircraftGroup.children.forEach(child => {
+                        if (child.userData && child.userData.type === 'resource') {
+                            const dist = child.position.distanceTo(state.playerGroup.position);
+                            if (dist < nearestCrateDist) {
+                                nearestCrateDist = dist;
+                                nearestCrate = child;
+                            }
+                        }
+                    });
+                    if (nearestCrate) {
+                        addItem(nearestCrate.userData.resource, nearestCrate.userData.amount);
+                        showMessage(`Collected ${nearestCrate.userData.resource} x${nearestCrate.userData.amount}`);
+                        state.aircraftGroup.remove(nearestCrate);
+                        playSound(800, 0.1, 'sine', 0.1);
+                        return;
+                    }
+                }
+                showMessage('Nothing to interact with.');
+            }
+        }
+
+        // --- SAVE / LOAD ---
+        function saveGame() {
+            try {
+                const saveData = {
+                    health: state.health,
+                    hunger: state.hunger,
+                    thirst: state.thirst,
+                    stamina: state.stamina,
+                    inventory: state.inventory,
+                    missionPhase: state.missionPhase,
+                    playerPos: state.playerGroup ? state.playerGroup.position.toArray() : [0,0,0],
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('alienApocalypseSave', JSON.stringify(saveData));
+            } catch(e) {}
+        }
+
+        function loadGame() {
+            try {
+                const saved = localStorage.getItem('alienApocalypseSave');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    state.health = data.health || 100;
+                    state.hunger = data.hunger || 100;
+                    state.thirst = data.thirst || 100;
+                    state.stamina = data.stamina || 100;
+                    state.inventory = data.inventory || {};
+                    state.missionPhase = data.missionPhase || 'plane';
+                    if (data.playerPos && state.playerGroup) {
+                        state.playerGroup.position.fromArray(data.playerPos);
+                    }
+                    updateInventoryUI();
+                    updateStatsUI();
+                }
+            } catch(e) {}
+        }
+
+        // --- ANIMATION LOOP ---
+        let lastTime = performance.now();
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const now = performance.now();
+            const delta = Math.min(0.1, (now - lastTime) / 1000);
+            lastTime = now;
+
+            if (!state.isPaused && !state.gameOver) {
+                updateGame(delta);
+            }
+
+            // Update attack cooldown
+            if (state.attackCooldown > 0) state.attackCooldown -= delta;
+
+            // Render
+            if (state.renderer && state.scene && state.camera) {
+                state.renderer.render(state.scene, state.camera);
+                if (state.labelRenderer) {
+                    state.labelRenderer.render(state.scene, state.camera);
+                }
+            }
+        }
+
+        // --- WINDOW RESIZE ---
+        window.addEventListener('resize', () => {
+            if (state.camera && state.renderer) {
+                state.camera.aspect = window.innerWidth / window.innerHeight;
+                state.camera.updateProjectionMatrix();
+                state.renderer.setSize(window.innerWidth, window.innerHeight);
+                state.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+
+        // --- START GAME ---
+        function startGame() {
+            initScene();
+            setupControls();
+            loadGame();
+            animate();
+            state.gameStarted = true;
+            showMessage('ESCAPE THE PLANE! Use the parachute from your inventory!');
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            setTimeout(startGame, 100);
+        });
+
+    </script>
 </body>
 </html>
